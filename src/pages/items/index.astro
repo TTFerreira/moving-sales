@@ -1,48 +1,24 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ItemCard from '../../components/ItemCard.astro';
-import CategoryFilter from '../../components/CategoryFilter.astro';
 import { getCollection } from 'astro:content';
 
 const allItems = await getCollection('items');
 
-const url = Astro.url;
-const categoryParam = url.searchParams.get('category') || '';
-const statusParam = url.searchParams.get('status') || '';
-const sortParam = url.searchParams.get('sort') || 'date-desc';
-
-let filtered = allItems;
-if (categoryParam) {
-  filtered = filtered.filter(item => item.data.category === categoryParam);
-}
-if (statusParam) {
-  filtered = filtered.filter(item => item.data.status === statusParam);
-}
-
-// Sort
-filtered = [...filtered].sort((a, b) => {
-  switch (sortParam) {
-    case 'price-asc': return a.data.askingPrice - b.data.askingPrice;
-    case 'price-desc': return b.data.askingPrice - a.data.askingPrice;
-    case 'date-asc': return a.data.dateAdded.localeCompare(b.data.dateAdded);
-    default: return b.data.dateAdded.localeCompare(a.data.dateAdded);
-  }
-});
+// Sort all items by date descending (default) at build time
+const sortedItems = [...allItems].sort((a, b) =>
+  b.data.dateAdded.localeCompare(a.data.dateAdded)
+);
 
 const categories = [...new Set(allItems.map(i => i.data.category))].sort();
-
-const pageTitle = categoryParam
-  ? `${categoryParam.charAt(0).toUpperCase() + categoryParam.slice(1)} Items`
-  : statusParam
-  ? `${statusParam.charAt(0).toUpperCase() + statusParam.slice(1)} Items`
-  : 'All Items';
+const statuses = ['available', 'reserved', 'sold'] as const;
 ---
 
-<Layout title={pageTitle}>
+<Layout title="All Items">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="mb-6">
-      <h1 class="text-3xl font-bold text-gray-900">{pageTitle}</h1>
-      <p class="text-gray-500 mt-1">{filtered.length} item{filtered.length !== 1 ? 's' : ''} found</p>
+      <h1 id="page-title" class="text-3xl font-bold text-gray-900">All Items</h1>
+      <p id="item-count" class="text-gray-500 mt-1">{sortedItems.length} items found</p>
     </div>
 
     <div class="flex flex-col lg:flex-row gap-8">
@@ -50,11 +26,48 @@ const pageTitle = categoryParam
       <aside class="lg:w-64 flex-shrink-0">
         <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 sticky top-20">
           <h2 class="font-semibold text-gray-800 mb-4">Filter Items</h2>
-          <CategoryFilter
-            categories={categories}
-            selectedCategory={categoryParam || undefined}
-            selectedStatus={statusParam || undefined}
-          />
+
+          <div class="space-y-4">
+            <div>
+              <p class="text-sm font-medium text-gray-600 mb-2">Category</p>
+              <div class="flex flex-wrap gap-2">
+                <button
+                  data-filter-category=""
+                  class="filter-cat-btn px-3 py-1.5 rounded-full text-sm font-medium transition-colors bg-amber-500 text-white"
+                >
+                  🏷️ All
+                </button>
+                {categories.map(cat => (
+                  <button
+                    data-filter-category={cat}
+                    class="filter-cat-btn px-3 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-200 hover:border-amber-400 hover:text-amber-600"
+                  >
+                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p class="text-sm font-medium text-gray-600 mb-2">Status</p>
+              <div class="flex flex-wrap gap-2">
+                <button
+                  data-filter-status=""
+                  class="filter-status-btn px-3 py-1.5 rounded-full text-sm font-medium transition-colors bg-gray-800 text-white"
+                >
+                  All
+                </button>
+                {statuses.map(s => (
+                  <button
+                    data-filter-status={s}
+                    class="filter-status-btn px-3 py-1.5 rounded-full text-sm font-medium transition-colors bg-white text-gray-600 border border-gray-200 hover:border-gray-400"
+                  >
+                    {s.charAt(0).toUpperCase() + s.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
 
           <div class="mt-6 pt-4 border-t border-gray-100">
             <p class="text-sm font-medium text-gray-600 mb-2">Sort By</p>
@@ -65,12 +78,12 @@ const pageTitle = categoryParam
                 { value: 'price-asc', label: 'Price: Low to High' },
                 { value: 'price-desc', label: 'Price: High to Low' },
               ].map(opt => (
-                <a
-                  href={`/items?${new URLSearchParams({ ...(categoryParam ? { category: categoryParam } : {}), ...(statusParam ? { status: statusParam } : {}), sort: opt.value }).toString()}`}
-                  class={`block px-3 py-1.5 rounded text-sm transition-colors ${sortParam === opt.value ? 'bg-amber-50 text-amber-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}
+                <button
+                  data-sort={opt.value}
+                  class={`sort-btn block w-full text-left px-3 py-1.5 rounded text-sm transition-colors ${opt.value === 'date-desc' ? 'bg-amber-50 text-amber-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}
                 >
                   {opt.label}
-                </a>
+                </button>
               ))}
             </div>
           </div>
@@ -79,16 +92,20 @@ const pageTitle = categoryParam
 
       <!-- Items grid -->
       <div class="flex-1">
-        {filtered.length === 0 ? (
-          <div class="text-center py-16 text-gray-500">
-            <div class="text-5xl mb-4">🔍</div>
-            <p class="text-xl font-medium">No items found</p>
-            <p class="mt-2">Try adjusting your filters</p>
-            <a href="/items" class="mt-4 inline-block text-amber-600 hover:underline">Clear filters</a>
-          </div>
-        ) : (
-          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-            {filtered.map(item => (
+        <div id="empty-state" class="hidden text-center py-16 text-gray-500">
+          <div class="text-5xl mb-4">🔍</div>
+          <p class="text-xl font-medium">No items found</p>
+          <p class="mt-2">Try adjusting your filters</p>
+        </div>
+        <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          {sortedItems.map(item => (
+            <div
+              class="item-wrapper"
+              data-category={item.data.category}
+              data-status={item.data.status}
+              data-price={item.data.askingPrice}
+              data-date={item.data.dateAdded}
+            >
               <ItemCard
                 slug={item.id}
                 title={item.data.title}
@@ -100,10 +117,123 @@ const pageTitle = categoryParam
                 images={item.data.images}
                 featured={item.data.featured}
               />
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   </div>
 </Layout>
+
+<script>
+  const grid = document.getElementById('items-grid');
+  const emptyState = document.getElementById('empty-state');
+  const countEl = document.getElementById('item-count');
+  const titleEl = document.getElementById('page-title');
+
+  let activeCategory = '';
+  let activeStatus = '';
+  let activeSort = 'date-desc';
+
+  function syncFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    activeCategory = params.get('category') || '';
+    activeStatus = params.get('status') || '';
+    activeSort = params.get('sort') || 'date-desc';
+  }
+
+  function updateUrl() {
+    const params = new URLSearchParams();
+    if (activeCategory) params.set('category', activeCategory);
+    if (activeStatus) params.set('status', activeStatus);
+    if (activeSort && activeSort !== 'date-desc') params.set('sort', activeSort);
+    const qs = params.toString();
+    history.replaceState(null, '', '/items' + (qs ? '?' + qs : ''));
+  }
+
+  function applyFilters() {
+    if (!grid) return;
+    const wrappers = Array.from(grid.querySelectorAll<HTMLElement>('.item-wrapper'));
+
+    // Filter
+    const visible = wrappers.filter(w => {
+      const cat = w.dataset.category || '';
+      const st = w.dataset.status || '';
+      return (!activeCategory || cat === activeCategory) && (!activeStatus || st === activeStatus);
+    });
+    const hidden = wrappers.filter(w => !visible.includes(w));
+
+    visible.forEach(w => { w.style.display = ''; });
+    hidden.forEach(w => { w.style.display = 'none'; });
+
+    // Sort visible items
+    visible.sort((a, b) => {
+      switch (activeSort) {
+        case 'price-asc': return Number(a.dataset.price) - Number(b.dataset.price);
+        case 'price-desc': return Number(b.dataset.price) - Number(a.dataset.price);
+        case 'date-asc': return (a.dataset.date || '').localeCompare(b.dataset.date || '');
+        default: return (b.dataset.date || '').localeCompare(a.dataset.date || '');
+      }
+    });
+    visible.forEach(w => grid.appendChild(w));
+
+    // Update count & title
+    const count = visible.length;
+    if (countEl) countEl.textContent = `${count} item${count !== 1 ? 's' : ''} found`;
+    if (titleEl) {
+      titleEl.textContent = activeCategory
+        ? `${activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)} Items`
+        : activeStatus
+        ? `${activeStatus.charAt(0).toUpperCase() + activeStatus.slice(1)} Items`
+        : 'All Items';
+    }
+    if (emptyState) emptyState.classList.toggle('hidden', count > 0);
+
+    // Update button active states
+    document.querySelectorAll<HTMLElement>('.filter-cat-btn').forEach(btn => {
+      const isActive = (btn.dataset.filterCategory ?? '') === activeCategory;
+      btn.className = `filter-cat-btn px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+        isActive ? 'bg-amber-500 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:border-amber-400 hover:text-amber-600'
+      }`;
+    });
+    document.querySelectorAll<HTMLElement>('.filter-status-btn').forEach(btn => {
+      const isActive = (btn.dataset.filterStatus ?? '') === activeStatus;
+      btn.className = `filter-status-btn px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+        isActive ? 'bg-gray-800 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-400'
+      }`;
+    });
+    document.querySelectorAll<HTMLElement>('.sort-btn').forEach(btn => {
+      const isActive = (btn.dataset.sort ?? '') === activeSort;
+      btn.className = `sort-btn block w-full text-left px-3 py-1.5 rounded text-sm transition-colors ${
+        isActive ? 'bg-amber-50 text-amber-700 font-medium' : 'text-gray-600 hover:bg-gray-50'
+      }`;
+    });
+  }
+
+  // Wire up filter buttons
+  document.querySelectorAll<HTMLElement>('.filter-cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeCategory = btn.dataset.filterCategory || '';
+      updateUrl();
+      applyFilters();
+    });
+  });
+  document.querySelectorAll<HTMLElement>('.filter-status-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeStatus = btn.dataset.filterStatus || '';
+      updateUrl();
+      applyFilters();
+    });
+  });
+  document.querySelectorAll<HTMLElement>('.sort-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeSort = btn.dataset.sort || 'date-desc';
+      updateUrl();
+      applyFilters();
+    });
+  });
+
+  // Apply on load (handles direct URL with query params)
+  syncFromUrl();
+  applyFilters();
+</script>
