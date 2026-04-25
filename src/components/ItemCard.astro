@@ -2,6 +2,7 @@
 import StatusBadge from './StatusBadge.astro';
 import ConditionBadge from './ConditionBadge.astro';
 import PriceDisplay from './PriceDisplay.astro';
+import { base } from '../utils/base';
 
 interface Props {
   slug: string;
@@ -36,7 +37,7 @@ const hasImage = images && images.length > 0;
 ---
 
 <article class={`bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-gray-100 hover:border-amber-200 group ${status === 'sold' ? 'opacity-75' : ''}`}>
-  <a href={`/items/${slug}`} class="block">
+  <a href={`${base}items/${slug}`} class="block">
     <div class="relative aspect-[4/3] bg-gradient-to-br from-amber-50 to-orange-100 overflow-hidden">
       {hasImage ? (
         <img
