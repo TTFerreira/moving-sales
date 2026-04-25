@@ -1,0 +1,18 @@
+{
+  "title": "LEGO Technic Collection",
+  "description": "Large collection of LEGO Technic sets, all built and dismantled once. Includes Bugatti Chiron, Land Rover Defender, and Liebherr crane. All pieces accounted for.",
+  "category": "toys",
+  "condition": "like-new",
+  "askingPrice": 380,
+  "originalPrice": 750,
+  "specs": {
+    "Sets included": "3 (Bugatti, Land Rover, Liebherr)",
+    "Total pieces": "~4500",
+    "Instructions": "All included"
+  },
+  "images": ["/images/items/lego-1.jpg"],
+  "status": "available",
+  "featured": false,
+  "tags": ["LEGO", "Technic", "toys", "collectible"],
+  "dateAdded": "2024-01-23"
+}

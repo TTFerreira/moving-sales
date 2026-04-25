@@ -1,0 +1,22 @@
+{
+  "title": "Trek Mountain Bike 29\"",
+  "description": "Trek Marlin 7 mountain bike, 29-inch wheels. Hydraulic disc brakes, 24-speed drivetrain. Serviced 3 months ago. Perfect for trails.",
+  "category": "sports",
+  "condition": "good",
+  "askingPrice": 550,
+  "originalPrice": 900,
+  "specs": {
+    "Wheel Size": "29 inches",
+    "Frame Size": "Large",
+    "Speeds": "24",
+    "Brakes": "Hydraulic disc",
+    "Frame Material": "Aluminium",
+    "Colour": "Matte black"
+  },
+  "images": ["/images/items/bike-1.jpg", "/images/items/bike-2.jpg"],
+  "youtubeVideoId": "L_LUpnjgPso",
+  "status": "available",
+  "featured": true,
+  "tags": ["bike", "cycling", "Trek", "mountain bike", "outdoor"],
+  "dateAdded": "2024-01-19"
+}

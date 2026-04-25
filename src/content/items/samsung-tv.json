@@ -1,0 +1,21 @@
+{
+  "title": "Samsung 65\" 4K QLED TV",
+  "description": "Stunning 65-inch QLED TV with vibrant colours and deep blacks. Smart TV with all streaming apps built in. Includes original remote and all cables.",
+  "category": "electronics",
+  "condition": "good",
+  "askingPrice": 800,
+  "originalPrice": 1600,
+  "specs": {
+    "Screen Size": "65 inches",
+    "Resolution": "4K Ultra HD",
+    "Panel Type": "QLED",
+    "Smart TV": "Yes",
+    "HDR": "HDR10+",
+    "Year": "2022"
+  },
+  "images": ["/images/items/samsung-tv-1.jpg"],
+  "status": "reserved",
+  "featured": true,
+  "tags": ["TV", "Samsung", "4K", "smart TV"],
+  "dateAdded": "2024-01-16"
+}

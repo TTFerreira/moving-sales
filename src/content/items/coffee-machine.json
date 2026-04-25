@@ -1,0 +1,23 @@
+{
+  "title": "De'Longhi Espresso Machine",
+  "description": "De'Longhi Dinamica automatic espresso machine. Makes perfect espresso, cappuccino, and latte. Built-in grinder. Recently serviced and descaled.",
+  "category": "kitchen",
+  "condition": "good",
+  "askingPrice": 450,
+  "originalPrice": 900,
+  "specs": {
+    "Type": "Automatic",
+    "Grinder": "Built-in conical burr",
+    "Capacity": "1.8L water tank",
+    "Pressure": "15 bar",
+    "Colour": "Titanium"
+  },
+  "images": ["/images/items/coffee-1.jpg", "/images/items/coffee-2.jpg"],
+  "links": [
+    { "label": "De'Longhi product page", "url": "https://www.delonghi.com" }
+  ],
+  "status": "sold",
+  "featured": false,
+  "tags": ["coffee", "espresso", "kitchen", "De'Longhi"],
+  "dateAdded": "2024-01-22"
+}

@@ -1,0 +1,18 @@
+{
+  "title": "Box of 30 Classic Novels",
+  "description": "Collection of 30 classic and contemporary novels. Authors include Hemingway, Fitzgerald, Orwell, Atwood, and more. All in good readable condition.",
+  "category": "books",
+  "condition": "good",
+  "askingPrice": 40,
+  "originalPrice": 300,
+  "specs": {
+    "Number of books": "30",
+    "Genres": "Classic literature, Contemporary fiction",
+    "Condition": "Good - some minor wear"
+  },
+  "images": ["/images/items/books-1.jpg"],
+  "status": "available",
+  "featured": false,
+  "tags": ["books", "novels", "reading", "classics"],
+  "dateAdded": "2024-01-21"
+}

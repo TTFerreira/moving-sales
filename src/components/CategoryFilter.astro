@@ -1,0 +1,75 @@
+---
+interface Props {
+  categories: string[];
+  selectedCategory?: string;
+  selectedStatus?: string;
+  basePath?: string;
+}
+
+const { categories, selectedCategory, selectedStatus, basePath = '/items' } = Astro.props;
+
+const allCategories = ['all', ...categories];
+
+const categoryIcons: Record<string, string> = {
+  all: '🏷️',
+  furniture: '🛋️',
+  electronics: '📺',
+  kitchen: '🍳',
+  outdoor: '🌿',
+  clothing: '👕',
+  books: '📚',
+  toys: '🧸',
+  sports: '⚽',
+  tools: '🔧',
+  decor: '🏺',
+  misc: '📦',
+};
+
+const statuses = ['all', 'available', 'reserved', 'sold'];
+
+function buildUrl(cat: string, status: string) {
+  const params = new URLSearchParams();
+  if (cat !== 'all') params.set('category', cat);
+  if (status !== 'all') params.set('status', status);
+  const qs = params.toString();
+  return `${basePath}${qs ? '?' + qs : ''}`;
+}
+---
+
+<div class="space-y-4">
+  <div>
+    <p class="text-sm font-medium text-gray-600 mb-2">Category</p>
+    <div class="flex flex-wrap gap-2">
+      {allCategories.map(cat => (
+        <a
+          href={buildUrl(cat, selectedStatus || 'all')}
+          class={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+            (selectedCategory === cat || (!selectedCategory && cat === 'all'))
+              ? 'bg-amber-500 text-white'
+              : 'bg-white text-gray-600 border border-gray-200 hover:border-amber-400 hover:text-amber-600'
+          }`}
+        >
+          {categoryIcons[cat]} {cat.charAt(0).toUpperCase() + cat.slice(1)}
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <div>
+    <p class="text-sm font-medium text-gray-600 mb-2">Status</p>
+    <div class="flex flex-wrap gap-2">
+      {statuses.map(s => (
+        <a
+          href={buildUrl(selectedCategory || 'all', s)}
+          class={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+            (selectedStatus === s || (!selectedStatus && s === 'all'))
+              ? 'bg-gray-800 text-white'
+              : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-400'
+          }`}
+        >
+          {s.charAt(0).toUpperCase() + s.slice(1)}
+        </a>
+      ))}
+    </div>
+  </div>
+</div>

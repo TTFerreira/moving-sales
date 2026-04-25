@@ -1,0 +1,24 @@
+{
+  "title": "3-Seater Leather Sofa",
+  "description": "Beautiful genuine leather sofa in excellent condition. Barely used, purchased 2 years ago. No scratches or tears. Neutral tan colour that goes with everything.",
+  "category": "furniture",
+  "condition": "like-new",
+  "askingPrice": 650,
+  "originalPrice": 1800,
+  "specs": {
+    "Width": "220cm",
+    "Depth": "95cm",
+    "Height": "85cm",
+    "Material": "Genuine leather",
+    "Colour": "Tan"
+  },
+  "images": ["/images/items/leather-sofa-1.jpg", "/images/items/leather-sofa-2.jpg"],
+  "youtubeVideoId": "dQw4w9WgXcQ",
+  "links": [
+    { "label": "Original product page", "url": "https://example.com/sofa" }
+  ],
+  "status": "available",
+  "featured": true,
+  "tags": ["sofa", "living room", "leather", "seating"],
+  "dateAdded": "2024-01-15"
+}
