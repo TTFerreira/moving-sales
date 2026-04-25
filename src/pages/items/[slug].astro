@@ -1,0 +1,233 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import ConditionBadge from '../../components/ConditionBadge.astro';
+import PriceDisplay from '../../components/PriceDisplay.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const items = await getCollection('items');
+  return items.map(item => ({
+    params: { slug: item.id },
+    props: { item },
+  }));
+}
+
+const { item } = Astro.props;
+const { title, description, category, condition, askingPrice, originalPrice, specs, images, youtubeVideoId, links, status, featured, tags, dateAdded } = item.data;
+
+const savings = originalPrice ? originalPrice - askingPrice : null;
+const savingsPct = originalPrice ? Math.round((savings! / originalPrice) * 100) : null;
+
+const categoryIcons: Record<string, string> = {
+  furniture: '🛋️',
+  electronics: '📺',
+  kitchen: '🍳',
+  outdoor: '🌿',
+  clothing: '👕',
+  books: '📚',
+  toys: '🧸',
+  sports: '⚽',
+  tools: '🔧',
+  decor: '🏺',
+  misc: '📦',
+};
+---
+
+<Layout title={title} description={description}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Breadcrumb -->
+    <nav class="text-sm text-gray-500 mb-6 flex items-center gap-2">
+      <a href="/" class="hover:text-amber-600">Home</a>
+      <span>/</span>
+      <a href="/items" class="hover:text-amber-600">All Items</a>
+      <span>/</span>
+      <a href={`/items?category=${category}`} class="hover:text-amber-600 capitalize">{category}</a>
+      <span>/</span>
+      <span class="text-gray-700 truncate max-w-xs">{title}</span>
+    </nav>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+      <!-- Gallery -->
+      <div>
+        <div id="main-image" class="aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-amber-50 to-orange-100 mb-3">
+          {images && images.length > 0 ? (
+            <img
+              id="main-img-el"
+              src={images[0]}
+              alt={title}
+              class="w-full h-full object-cover"
+              onerror="this.style.display='none'; document.getElementById('main-img-placeholder').style.display='flex';"
+            />
+            <div id="main-img-placeholder" class="hidden w-full h-full items-center justify-center text-8xl">
+              {categoryIcons[category] || '📦'}
+            </div>
+          ) : (
+            <div class="w-full h-full flex items-center justify-center text-8xl">
+              {categoryIcons[category] || '📦'}
+            </div>
+          )}
+        </div>
+        {images && images.length > 1 && (
+          <div class="flex gap-2 overflow-x-auto pb-2">
+            {images.map((img, i) => (
+              <button
+                class="thumbnail-btn flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 border-transparent hover:border-amber-400 transition-colors"
+                data-src={img}
+                data-index={i}
+              >
+                <img
+                  src={img}
+                  alt={`${title} photo ${i + 1}`}
+                  class="w-full h-full object-cover"
+                  onerror="this.parentElement.style.display='none'"
+                />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- Details -->
+      <div>
+        <div class="flex items-start gap-3 mb-3 flex-wrap">
+          {featured && (
+            <span class="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-1 rounded-full">⭐ Featured</span>
+          )}
+          <StatusBadge status={status} />
+          <ConditionBadge condition={condition} />
+        </div>
+
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
+
+        <div class="flex items-center gap-2 text-gray-500 text-sm mb-4">
+          <span>{categoryIcons[category]} <span class="capitalize">{category}</span></span>
+          <span>·</span>
+          <span>Listed {dateAdded}</span>
+        </div>
+
+        <!-- Price -->
+        <div class="bg-amber-50 border border-amber-100 rounded-xl p-4 mb-6">
+          <PriceDisplay askingPrice={askingPrice} originalPrice={originalPrice} large={true} />
+          {savings && savings > 0 && (
+            <p class="text-green-700 text-sm mt-1 font-medium">
+              💰 You save ${savings.toLocaleString()} ({savingsPct}% off original price)
+            </p>
+          )}
+        </div>
+
+        <!-- Description -->
+        <div class="mb-6">
+          <h2 class="font-semibold text-gray-800 mb-2">Description</h2>
+          <p class="text-gray-600 leading-relaxed">{description}</p>
+        </div>
+
+        <!-- Specs -->
+        {specs && Object.keys(specs).length > 0 && (
+          <div class="mb-6">
+            <h2 class="font-semibold text-gray-800 mb-3">Specifications</h2>
+            <div class="bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
+              <table class="w-full text-sm">
+                <tbody>
+                  {Object.entries(specs).map(([key, value], i) => (
+                    <tr class={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                      <td class="px-4 py-2.5 font-medium text-gray-600 w-2/5">{key}</td>
+                      <td class="px-4 py-2.5 text-gray-800">{value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        <!-- Tags -->
+        {tags && tags.length > 0 && (
+          <div class="mb-6">
+            <div class="flex flex-wrap gap-2">
+              {tags.map(tag => (
+                <span class="bg-gray-100 text-gray-600 text-xs px-2.5 py-1 rounded-full">#{tag}</span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Links -->
+        {links && links.length > 0 && (
+          <div class="mb-6">
+            <h2 class="font-semibold text-gray-800 mb-2">Reference Links</h2>
+            <div class="space-y-2">
+              {links.map(link => (
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center gap-2 text-amber-600 hover:text-amber-700 text-sm"
+                >
+                  🔗 {link.label} ↗
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Contact -->
+        <div class="bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl p-5 text-white">
+          <h2 class="font-bold text-lg mb-1">
+            {status === 'available' ? '💬 Interested? Contact Us!' : status === 'reserved' ? '⏳ This item is reserved' : '✅ This item has been sold'}
+          </h2>
+          {status === 'available' ? (
+            <>
+              <p class="text-amber-100 text-sm mb-3">Collection only. Contact us to arrange a viewing.</p>
+              <div class="flex flex-wrap gap-3">
+                <a href={`mailto:seller@example.com?subject=Enquiry: ${title}`} class="bg-white text-amber-600 font-semibold px-4 py-2 rounded-lg hover:bg-amber-50 transition-colors text-sm">
+                  📧 Email Us
+                </a>
+                <a href="tel:+15551234567" class="border-2 border-white text-white font-semibold px-4 py-2 rounded-lg hover:bg-white hover:text-amber-600 transition-colors text-sm">
+                  📞 Call Us
+                </a>
+              </div>
+            </>
+          ) : (
+            <p class="text-amber-100 text-sm">Check our other available items!</p>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <!-- YouTube Video -->
+    {youtubeVideoId && (
+      <div class="mt-10">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">📹 Video</h2>
+        <div class="aspect-video rounded-2xl overflow-hidden shadow-lg max-w-3xl">
+          <iframe
+            src={`https://www.youtube.com/embed/${youtubeVideoId}`}
+            title={`${title} video`}
+            class="w-full h-full"
+            allowfullscreen
+            loading="lazy"
+          />
+        </div>
+      </div>
+    )}
+  </div>
+</Layout>
+
+<script>
+  const thumbnails = document.querySelectorAll<HTMLButtonElement>('.thumbnail-btn');
+  const mainImg = document.getElementById('main-img-el') as HTMLImageElement | null;
+
+  thumbnails.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const src = btn.dataset.src;
+      if (mainImg && src) {
+        mainImg.src = src;
+        mainImg.style.display = '';
+        const placeholder = document.getElementById('main-img-placeholder');
+        if (placeholder) placeholder.style.display = 'none';
+      }
+      thumbnails.forEach(t => t.classList.remove('border-amber-400'));
+      btn.classList.add('border-amber-400');
+    });
+  });
+</script>

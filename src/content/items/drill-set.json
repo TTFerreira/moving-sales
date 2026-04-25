@@ -1,0 +1,23 @@
+{
+  "title": "DeWalt Power Tool Set",
+  "description": "DeWalt 20V MAX power tool combo kit. Includes drill/driver, impact driver, circular saw, reciprocating saw, and oscillating tool. Two batteries included.",
+  "category": "tools",
+  "condition": "good",
+  "askingPrice": 380,
+  "originalPrice": 700,
+  "specs": {
+    "Voltage": "20V MAX",
+    "Tools included": "5",
+    "Batteries": "2x 4Ah",
+    "Charger": "Included",
+    "Case": "Hard carry case included"
+  },
+  "images": ["/images/items/dewalt-1.jpg"],
+  "links": [
+    { "label": "DeWalt website", "url": "https://www.dewalt.com" }
+  ],
+  "status": "available",
+  "featured": false,
+  "tags": ["tools", "DeWalt", "power tools", "drill"],
+  "dateAdded": "2024-01-24"
+}

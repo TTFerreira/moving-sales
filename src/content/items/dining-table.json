@@ -1,0 +1,21 @@
+{
+  "title": "Oak Dining Table with 6 Chairs",
+  "description": "Solid oak dining table with 6 matching upholstered chairs. Minor surface scratches but structurally perfect. Great family dining set.",
+  "category": "furniture",
+  "condition": "good",
+  "askingPrice": 420,
+  "originalPrice": 950,
+  "specs": {
+    "Table Width": "180cm",
+    "Table Depth": "90cm",
+    "Table Height": "75cm",
+    "Material": "Solid Oak",
+    "Chairs Included": "6",
+    "Chair Upholstery": "Grey fabric"
+  },
+  "images": ["/images/items/dining-table-1.jpg", "/images/items/dining-table-2.jpg"],
+  "status": "available",
+  "featured": true,
+  "tags": ["dining", "table", "chairs", "oak"],
+  "dateAdded": "2024-01-17"
+}

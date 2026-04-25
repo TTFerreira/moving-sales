@@ -1,0 +1,123 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ItemCard from '../components/ItemCard.astro';
+import { getCollection } from 'astro:content';
+
+const allItems = await getCollection('items');
+const featuredItems = allItems.filter(item => item.data.featured);
+const availableItems = allItems.filter(item => item.data.status === 'available');
+
+const categoryCounts: Record<string, number> = {};
+for (const item of allItems) {
+  categoryCounts[item.data.category] = (categoryCounts[item.data.category] || 0) + 1;
+}
+
+const categories = [
+  { name: 'furniture', icon: '🛋️', label: 'Furniture' },
+  { name: 'electronics', icon: '📺', label: 'Electronics' },
+  { name: 'kitchen', icon: '🍳', label: 'Kitchen' },
+  { name: 'outdoor', icon: '🌿', label: 'Outdoor' },
+  { name: 'clothing', icon: '👕', label: 'Clothing' },
+  { name: 'books', icon: '📚', label: 'Books' },
+  { name: 'toys', icon: '🧸', label: 'Toys' },
+  { name: 'sports', icon: '⚽', label: 'Sports' },
+  { name: 'tools', icon: '🔧', label: 'Tools' },
+  { name: 'decor', icon: '🏺', label: 'Decor' },
+  { name: 'misc', icon: '📦', label: 'Misc' },
+].filter(c => categoryCounts[c.name]);
+---
+
+<Layout title="Home">
+  <!-- Hero -->
+  <section class="bg-gradient-to-br from-amber-500 to-orange-600 text-white py-20 px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="text-6xl mb-4">📦</div>
+      <h1 class="text-4xl md:text-6xl font-bold mb-4">Everything Must Go!</h1>
+      <p class="text-xl md:text-2xl text-amber-100 mb-4">We're Moving — Incredible Deals on Quality Items</p>
+      <p class="text-amber-200 mb-8 max-w-2xl mx-auto">Browse our collection of furniture, electronics, kitchen appliances, outdoor gear, and more. All items are priced to sell quickly!</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="/items?status=available" class="bg-white text-amber-600 font-bold px-8 py-3 rounded-full hover:bg-amber-50 transition-colors shadow-lg">
+          Browse Available Items →
+        </a>
+        <a href="/items" class="border-2 border-white text-white font-bold px-8 py-3 rounded-full hover:bg-white hover:text-amber-600 transition-colors">
+          View All Items
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-3 gap-6 text-center">
+        <div>
+          <div class="text-3xl font-bold text-amber-600">{allItems.length}</div>
+          <div class="text-gray-600 text-sm">Total Items</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold text-green-600">{availableItems.length}</div>
+          <div class="text-gray-600 text-sm">Available Now</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold text-blue-600">{categories.length}</div>
+          <div class="text-gray-600 text-sm">Categories</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Items -->
+  {featuredItems.length > 0 && (
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">⭐ Featured Items</h2>
+        <a href="/items" class="text-amber-600 hover:text-amber-700 font-medium text-sm">View all →</a>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {featuredItems.map(item => (
+          <ItemCard
+            slug={item.id}
+            title={item.data.title}
+            category={item.data.category}
+            condition={item.data.condition}
+            askingPrice={item.data.askingPrice}
+            originalPrice={item.data.originalPrice}
+            status={item.data.status}
+            images={item.data.images}
+            featured={item.data.featured}
+          />
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Categories -->
+  <section class="bg-gray-50 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Browse by Category</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {categories.map(cat => (
+          <a
+            href={`/items?category=${cat.name}`}
+            class="bg-white rounded-xl p-4 text-center hover:shadow-md hover:border-amber-300 border border-gray-100 transition-all group"
+          >
+            <div class="text-3xl mb-2">{cat.icon}</div>
+            <div class="font-medium text-gray-700 group-hover:text-amber-600 text-sm">{cat.label}</div>
+            <div class="text-xs text-gray-400 mt-1">{categoryCounts[cat.name]} item{categoryCounts[cat.name] !== 1 ? 's' : ''}</div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-amber-50 border-t border-amber-100 py-12">
+    <div class="max-w-3xl mx-auto px-4 text-center">
+      <h2 class="text-2xl font-bold text-gray-900 mb-3">Interested in Something?</h2>
+      <p class="text-gray-600 mb-6">All items are available for collection only. Contact us to arrange a viewing or ask any questions.</p>
+      <a href="mailto:seller@example.com" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3 rounded-full transition-colors shadow-md inline-block">
+        📧 Get in Touch
+      </a>
+    </div>
+  </section>
+</Layout>

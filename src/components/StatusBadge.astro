@@ -1,0 +1,19 @@
+---
+interface Props {
+  status: 'available' | 'reserved' | 'sold';
+}
+
+const { status } = Astro.props;
+
+const config = {
+  available: { label: 'Available', class: 'bg-green-100 text-green-800 border-green-200' },
+  reserved: { label: 'Reserved', class: 'bg-amber-100 text-amber-800 border-amber-200' },
+  sold: { label: 'Sold', class: 'bg-red-100 text-red-700 border-red-200' },
+};
+
+const badge = config[status];
+---
+
+<span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${badge.class}`}>
+  {badge.label}
+</span>

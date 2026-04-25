@@ -1,0 +1,23 @@
+{
+  "title": "KitchenAid Stand Mixer",
+  "description": "KitchenAid Artisan 5qt stand mixer in Empire Red. Comes with all original attachments: dough hook, flat beater, wire whisk. Works perfectly.",
+  "category": "kitchen",
+  "condition": "like-new",
+  "askingPrice": 280,
+  "originalPrice": 550,
+  "specs": {
+    "Capacity": "5 quarts",
+    "Power": "325 watts",
+    "Colour": "Empire Red",
+    "Speeds": "10",
+    "Attachments": "Dough hook, flat beater, wire whisk"
+  },
+  "images": ["/images/items/kitchenaid-1.jpg"],
+  "links": [
+    { "label": "KitchenAid product page", "url": "https://www.kitchenaid.com" }
+  ],
+  "status": "available",
+  "featured": false,
+  "tags": ["kitchen", "mixer", "baking", "KitchenAid"],
+  "dateAdded": "2024-01-18"
+}

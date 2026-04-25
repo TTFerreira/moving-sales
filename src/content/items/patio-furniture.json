@@ -1,0 +1,19 @@
+{
+  "title": "Rattan Outdoor Patio Set",
+  "description": "4-piece rattan outdoor furniture set. Includes 2-seater sofa, 2 armchairs, and coffee table. All-weather cushions included. Great condition.",
+  "category": "outdoor",
+  "condition": "good",
+  "askingPrice": 320,
+  "originalPrice": 700,
+  "specs": {
+    "Pieces": "4 (sofa, 2 chairs, table)",
+    "Material": "Synthetic rattan",
+    "Cushions": "Included, weatherproof",
+    "Colour": "Grey/Natural"
+  },
+  "images": ["/images/items/patio-1.jpg"],
+  "status": "available",
+  "featured": false,
+  "tags": ["outdoor", "garden", "patio", "rattan", "furniture"],
+  "dateAdded": "2024-01-20"
+}

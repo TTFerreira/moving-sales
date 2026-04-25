@@ -1,0 +1,109 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ItemCard from '../../components/ItemCard.astro';
+import CategoryFilter from '../../components/CategoryFilter.astro';
+import { getCollection } from 'astro:content';
+
+const allItems = await getCollection('items');
+
+const url = Astro.url;
+const categoryParam = url.searchParams.get('category') || '';
+const statusParam = url.searchParams.get('status') || '';
+const sortParam = url.searchParams.get('sort') || 'date-desc';
+
+let filtered = allItems;
+if (categoryParam) {
+  filtered = filtered.filter(item => item.data.category === categoryParam);
+}
+if (statusParam) {
+  filtered = filtered.filter(item => item.data.status === statusParam);
+}
+
+// Sort
+filtered = [...filtered].sort((a, b) => {
+  switch (sortParam) {
+    case 'price-asc': return a.data.askingPrice - b.data.askingPrice;
+    case 'price-desc': return b.data.askingPrice - a.data.askingPrice;
+    case 'date-asc': return a.data.dateAdded.localeCompare(b.data.dateAdded);
+    default: return b.data.dateAdded.localeCompare(a.data.dateAdded);
+  }
+});
+
+const categories = [...new Set(allItems.map(i => i.data.category))].sort();
+
+const pageTitle = categoryParam
+  ? `${categoryParam.charAt(0).toUpperCase() + categoryParam.slice(1)} Items`
+  : statusParam
+  ? `${statusParam.charAt(0).toUpperCase() + statusParam.slice(1)} Items`
+  : 'All Items';
+---
+
+<Layout title={pageTitle}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-6">
+      <h1 class="text-3xl font-bold text-gray-900">{pageTitle}</h1>
+      <p class="text-gray-500 mt-1">{filtered.length} item{filtered.length !== 1 ? 's' : ''} found</p>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Sidebar filters -->
+      <aside class="lg:w-64 flex-shrink-0">
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 sticky top-20">
+          <h2 class="font-semibold text-gray-800 mb-4">Filter Items</h2>
+          <CategoryFilter
+            categories={categories}
+            selectedCategory={categoryParam || undefined}
+            selectedStatus={statusParam || undefined}
+          />
+
+          <div class="mt-6 pt-4 border-t border-gray-100">
+            <p class="text-sm font-medium text-gray-600 mb-2">Sort By</p>
+            <div class="space-y-1">
+              {[
+                { value: 'date-desc', label: 'Newest First' },
+                { value: 'date-asc', label: 'Oldest First' },
+                { value: 'price-asc', label: 'Price: Low to High' },
+                { value: 'price-desc', label: 'Price: High to Low' },
+              ].map(opt => (
+                <a
+                  href={`/items?${new URLSearchParams({ ...(categoryParam ? { category: categoryParam } : {}), ...(statusParam ? { status: statusParam } : {}), sort: opt.value }).toString()}`}
+                  class={`block px-3 py-1.5 rounded text-sm transition-colors ${sortParam === opt.value ? 'bg-amber-50 text-amber-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}
+                >
+                  {opt.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Items grid -->
+      <div class="flex-1">
+        {filtered.length === 0 ? (
+          <div class="text-center py-16 text-gray-500">
+            <div class="text-5xl mb-4">🔍</div>
+            <p class="text-xl font-medium">No items found</p>
+            <p class="mt-2">Try adjusting your filters</p>
+            <a href="/items" class="mt-4 inline-block text-amber-600 hover:underline">Clear filters</a>
+          </div>
+        ) : (
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            {filtered.map(item => (
+              <ItemCard
+                slug={item.id}
+                title={item.data.title}
+                category={item.data.category}
+                condition={item.data.condition}
+                askingPrice={item.data.askingPrice}
+                originalPrice={item.data.originalPrice}
+                status={item.data.status}
+                images={item.data.images}
+                featured={item.data.featured}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</Layout>

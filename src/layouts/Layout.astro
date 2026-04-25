@@ -1,0 +1,107 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Moving Sale - Everything Must Go!" } = Astro.props;
+const siteTitle = "Moving Sale";
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/items", label: "All Items" },
+  { href: "/items?status=available", label: "Available" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} | {siteTitle}</title>
+  </head>
+  <body class="min-h-screen bg-gray-50 flex flex-col">
+    <header class="bg-amber-600 text-white shadow-lg sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <a href="/" class="flex items-center gap-2 font-bold text-xl hover:text-amber-100 transition-colors">
+            <span class="text-2xl">📦</span>
+            <span>{siteTitle}</span>
+          </a>
+          <nav class="hidden md:flex items-center gap-6">
+            {navLinks.map(link => (
+              <a
+                href={link.href}
+                class="font-medium hover:text-amber-200 transition-colors"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+          <button
+            id="menu-toggle"
+            class="md:hidden p-2 rounded-md hover:bg-amber-700 transition-colors"
+            aria-label="Toggle menu"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+        <nav id="mobile-menu" class="hidden md:hidden pb-4">
+          {navLinks.map(link => (
+            <a
+              href={link.href}
+              class="block py-2 font-medium hover:text-amber-200 transition-colors"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 mt-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h3 class="text-white font-bold text-lg mb-3">📦 Moving Sale</h3>
+            <p class="text-sm">Everything must go! We're moving and need to sell our belongings. Great deals on quality items.</p>
+          </div>
+          <div>
+            <h3 class="text-white font-bold mb-3">Quick Links</h3>
+            <ul class="space-y-1 text-sm">
+              <li><a href="/" class="hover:text-white transition-colors">Home</a></li>
+              <li><a href="/items" class="hover:text-white transition-colors">All Items</a></li>
+              <li><a href="/items?status=available" class="hover:text-white transition-colors">Available Items</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-white font-bold mb-3">Contact</h3>
+            <p class="text-sm">Interested in an item? Get in touch!</p>
+            <a href="mailto:seller@example.com" class="text-amber-400 hover:text-amber-300 text-sm transition-colors">seller@example.com</a>
+            <p class="text-sm mt-1">📞 +1 (555) 123-4567</p>
+            <p class="text-sm mt-2 text-gray-400">Collection only — no shipping</p>
+          </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-500">
+          <p>Moving Sale &copy; {new Date().getFullYear()}. All items are sold as seen.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const toggle = document.getElementById('menu-toggle');
+      const menu = document.getElementById('mobile-menu');
+      toggle?.addEventListener('click', () => {
+        menu?.classList.toggle('hidden');
+      });
+    </script>
+  </body>
+</html>
