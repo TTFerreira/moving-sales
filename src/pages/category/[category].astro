@@ -48,6 +48,7 @@ const categoryIcons: Record<string, string> = {
 
 const label = categoryLabels[category] || category;
 const icon = categoryIcons[category] || '📦';
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
 
 <Layout title={label}>
@@ -63,8 +64,8 @@ const icon = categoryIcons[category] || '📦';
         <span class="text-green-600 font-medium">{availableCount} available</span>
       </p>
       <div class="mt-3 flex gap-3">
-        <a href="/items" class="text-sm text-amber-600 hover:underline">← All Items</a>
-        <a href={`/items?category=${category}&status=available`} class="text-sm bg-amber-500 text-white px-3 py-1 rounded-full hover:bg-amber-600 transition-colors">
+        <a href={`${base}items`} class="text-sm text-amber-600 hover:underline">← All Items</a>
+        <a href={`${base}items?category=${category}&status=available`} class="text-sm bg-amber-500 text-white px-3 py-1 rounded-full hover:bg-amber-600 transition-colors">
           Show Available Only
         </a>
       </div>
@@ -74,7 +75,7 @@ const icon = categoryIcons[category] || '📦';
       <div class="text-center py-16 text-gray-500">
         <div class="text-5xl mb-4">{icon}</div>
         <p class="text-xl">No items in this category</p>
-        <a href="/items" class="mt-4 inline-block text-amber-600 hover:underline">Browse all items</a>
+        <a href={`${base}items`} class="mt-4 inline-block text-amber-600 hover:underline">Browse all items</a>
       </div>
     ) : (
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

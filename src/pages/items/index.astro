@@ -148,7 +148,7 @@ const statuses = ['available', 'reserved', 'sold'] as const;
     if (activeStatus) params.set('status', activeStatus);
     if (activeSort && activeSort !== 'date-desc') params.set('sort', activeSort);
     const qs = params.toString();
-    history.replaceState(null, '', '/items' + (qs ? '?' + qs : ''));
+    history.replaceState(null, '', import.meta.env.BASE_URL.replace(/\/?$/, '/') + 'items' + (qs ? '?' + qs : ''));
   }
 
   function applyFilters() {

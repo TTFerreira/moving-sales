@@ -12,6 +12,8 @@ for (const item of allItems) {
   categoryCounts[item.data.category] = (categoryCounts[item.data.category] || 0) + 1;
 }
 
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+
 const categories = [
   { name: 'furniture', icon: '🛋️', label: 'Furniture' },
   { name: 'electronics', icon: '📺', label: 'Electronics' },
@@ -36,10 +38,10 @@ const categories = [
       <p class="text-xl md:text-2xl text-amber-100 mb-4">We're Moving — Incredible Deals on Quality Items</p>
       <p class="text-amber-200 mb-8 max-w-2xl mx-auto">Browse our collection of furniture, electronics, kitchen appliances, outdoor gear, and more. All items are priced to sell quickly!</p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href="/items?status=available" class="bg-white text-amber-600 font-bold px-8 py-3 rounded-full hover:bg-amber-50 transition-colors shadow-lg">
+        <a href={`${base}items?status=available`} class="bg-white text-amber-600 font-bold px-8 py-3 rounded-full hover:bg-amber-50 transition-colors shadow-lg">
           Browse Available Items →
         </a>
-        <a href="/items" class="border-2 border-white text-white font-bold px-8 py-3 rounded-full hover:bg-white hover:text-amber-600 transition-colors">
+        <a href={`${base}items`} class="border-2 border-white text-white font-bold px-8 py-3 rounded-full hover:bg-white hover:text-amber-600 transition-colors">
           View All Items
         </a>
       </div>
@@ -71,7 +73,7 @@ const categories = [
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold text-gray-900">⭐ Featured Items</h2>
-        <a href="/items" class="text-amber-600 hover:text-amber-700 font-medium text-sm">View all →</a>
+        <a href={`${base}items`} class="text-amber-600 hover:text-amber-700 font-medium text-sm">View all →</a>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {featuredItems.map(item => (
@@ -98,7 +100,7 @@ const categories = [
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {categories.map(cat => (
           <a
-            href={`/items?category=${cat.name}`}
+            href={`${base}items?category=${cat.name}`}
             class="bg-white rounded-xl p-4 text-center hover:shadow-md hover:border-amber-300 border border-gray-100 transition-all group"
           >
             <div class="text-3xl mb-2">{cat.icon}</div>
