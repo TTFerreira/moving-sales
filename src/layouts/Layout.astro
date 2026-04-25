@@ -1,4 +1,6 @@
 ---
+import { base } from '../utils/base';
+
 interface Props {
   title: string;
   description?: string;
@@ -6,7 +8,6 @@ interface Props {
 
 const { title, description = "Moving Sale - Everything Must Go!" } = Astro.props;
 const siteTitle = "Moving Sale";
-const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const navLinks = [
   { href: base, label: "Home" },
   { href: `${base}items`, label: "All Items" },

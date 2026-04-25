@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import ItemCard from '../../components/ItemCard.astro';
 import { getCollection } from 'astro:content';
+import { base } from '../../utils/base';
 
 export async function getStaticPaths() {
   const items = await getCollection('items');
@@ -48,7 +49,6 @@ const categoryIcons: Record<string, string> = {
 
 const label = categoryLabels[category] || category;
 const icon = categoryIcons[category] || '📦';
-const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
 
 <Layout title={label}>

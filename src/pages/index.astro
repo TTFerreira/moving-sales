@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import ItemCard from '../components/ItemCard.astro';
 import { getCollection } from 'astro:content';
+import { base } from '../utils/base';
 
 const allItems = await getCollection('items');
 const featuredItems = allItems.filter(item => item.data.featured);
@@ -11,8 +12,6 @@ const categoryCounts: Record<string, number> = {};
 for (const item of allItems) {
   categoryCounts[item.data.category] = (categoryCounts[item.data.category] || 0) + 1;
 }
-
-const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 
 const categories = [
   { name: 'furniture', icon: '🛋️', label: 'Furniture' },
